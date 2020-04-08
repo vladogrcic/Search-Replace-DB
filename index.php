@@ -68,8 +68,19 @@ class icit_srdb_ui extends icit_srdb {
         // prevent fatals from hiding the UI
         register_shutdown_function( array( $this, 'fatal_handler' ) );
 
-        $this->response();
+        $path_mod = '/..';
 
+        // store WP path
+        $this->path = dirname( __FILE__ ) . $path_mod;
+        $db_details = $this->define_find( $this->path . '/wp-config.php' );
+
+        if ( $db_details ) {
+            $exploded_host = explode(':', $db_details[ 'host' ]);
+            $host = $exploded_host[0];
+            $port = $exploded_host[1];
+        }
+
+        $this->response( $db_details[ 'name' ], $db_details[ 'user' ], $db_details[ 'pass' ], $host, $port, $db_details[ 'char' ], $db_details[ 'coll' ] );
     }
 
     public function response(
