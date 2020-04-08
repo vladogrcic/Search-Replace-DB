@@ -82,7 +82,67 @@ class icit_srdb_ui extends icit_srdb {
 
         $this->response( $db_details[ 'name' ], $db_details[ 'user' ], $db_details[ 'pass' ], $host, $port, $db_details[ 'char' ], $db_details[ 'coll' ] );
     }
+    /**
+	 * Search through the file name passed for a set of defines used to set up
+	 * WordPress db access.
+	 *
+	 * @param string $filename The file name we need to scan for the defines.
+	 *
+	 * @return array    List of db connection details.
+	 */
+	public function define_find( $filename = 'wp-config.php' ) {
 
+		if ( $filename == 'wp-config.php' ) {
+			$filename = dirname( __FILE__ ) . '/' . basename( $filename );
+
+			// look up one directory if config file doesn't exist in current directory
+			if ( ! file_exists( $filename ) )
+				$filename = dirname( __FILE__ ) . '/../' . basename( $filename );
+		}
+
+		if ( file_exists( $filename ) && is_file( $filename ) && is_readable( $filename ) ) {
+			$file = @fopen( $filename, 'r' );
+			$file_content = fread( $file, filesize( $filename ) );
+			@fclose( $file );
+		}
+
+		preg_match_all( '/define\s*?\(\s*?([\'"])(DB_NAME|DB_USER|DB_PASSWORD|DB_HOST|DB_CHARSET|DB_COLLATE)\1\s*?,\s*?([\'"])([^\3]*?)\3\s*?\)\s*?;/si', $file_content, $defines );
+
+		if ( ( isset( $defines[ 2 ] ) && ! empty( $defines[ 2 ] ) ) && ( isset( $defines[ 4 ] ) && ! empty( $defines[ 4 ] ) ) ) {
+			foreach( $defines[ 2 ] as $key => $define ) {
+
+				switch( $define ) {
+					case 'DB_NAME':
+						$name = $defines[ 4 ][ $key ];
+						break;
+					case 'DB_USER':
+						$user = $defines[ 4 ][ $key ];
+						break;
+					case 'DB_PASSWORD':
+						$pass = $defines[ 4 ][ $key ];
+						break;
+					case 'DB_HOST':
+						$host = $defines[ 4 ][ $key ];
+						break;
+					case 'DB_CHARSET':
+						$char = $defines[ 4 ][ $key ];
+						break;
+					case 'DB_COLLATE':
+						$coll = $defines[ 4 ][ $key ];
+						break;
+				}
+			}
+		}
+
+		return array(
+			'host' => $host,
+			'name' => $name,
+			'user' => $user,
+			'pass' => $pass,
+			'char' => $char,
+			'coll' => $coll
+		);
+	}
     public function response(
         $name = '',
         $user = '',
