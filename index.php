@@ -97,8 +97,14 @@ class icit_srdb_ui extends icit_srdb {
             $host = $exploded_host[0];
             $port = $exploded_host[1];
         }
-
-        $this->response( $db_details[ 'name' ], $db_details[ 'user' ], $db_details[ 'pass' ], $host, $port, $db_details[ 'char' ], $db_details[ 'coll' ] );
+        $this->name = $db_details[ 'name' ];
+        $this->user = $db_details[ 'user' ];
+        $this->pass = $db_details[ 'pass' ];
+        $this->host = $host;
+        $this->port = $port;
+        $this->char = $db_details[ 'char' ];
+        $this->coll = $db_details[ 'coll' ];
+        $this->response( $this->name, $this->user, $this->pass, $this->host, $this->port, $this->char, $this->coll );
     }
     /**
 	 * Search through the file name passed for a set of defines used to set up
