@@ -1334,17 +1334,16 @@ class icit_srdb_ui extends icit_srdb {
                 legend, fieldset {
                     /*color: #fff;*/
                 }
-                .errors{
-                    max-height: 750px;
-                    overflow-y: scroll;
-                }
                 .fields, .content, .errors {
                     clear: both;
                     margin-top: 15px;
                     margin-bottom: 15px;
                     overflow: hidden;
                 }
-
+                .errors, .report{
+                    max-height: 750px;
+                    overflow-y: scroll;
+                }
                 .content {
                     margin-top: 20px;
                     margin-bottom: 20px;
